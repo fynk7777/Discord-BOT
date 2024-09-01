@@ -6,21 +6,27 @@ from flask import Flask
 from keep_alive import keep_alive
 from math import sqrt
 
-# 素数のファイル名
-PRIME_FILE = "Prime_number.txt"
+# 素数のファイル名リスト
+PRIME_FILES = ["Prime_number.txt", "Prime_number2.txt", "Prime_number3.txt"]
 
 def load_primes():
-    """素数ファイルを読み込み、リストを返す"""
-    if not os.path.exists(PRIME_FILE):
-        # ファイルが存在しない場合は空のリストを返す
-        return []
-    with open(PRIME_FILE, "r") as f:
-        primes = list(map(int, f.read().split()))
+    """複数の素数ファイルを読み込み、リストを返す"""
+    primes = []
+    for prime_file in PRIME_FILES:
+        if os.path.exists(prime_file):
+            with open(prime_file, "r") as f:
+                primes.extend(map(int, f.read().split()))
     return primes
 
 def save_prime(prime):
-    """新しい素数をファイルに保存する"""
-    with open(PRIME_FILE, "a") as f:
+    """新しい素数を最も新しいファイルに保存する"""
+    for prime_file in reversed(PRIME_FILES):
+        if os.path.exists(prime_file):
+            with open(prime_file, "a") as f:
+                f.write(f"{prime}\n")
+            return
+    # もしどのファイルも存在しない場合は、最初のファイルに保存
+    with open(PRIME_FILES[0], "a") as f:
         f.write(f"{prime}\n")
 
 def is_prime(n):
@@ -151,3 +157,4 @@ keep_alive()
 
 # ボットを実行
 client.run(TOKEN)
+
