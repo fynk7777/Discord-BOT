@@ -63,7 +63,7 @@ async def on_message(message):
     if prime_match:
         number = int(prime_match.group(1))
         factors = prime_factors(number)
-        response = f'prime factors of {number}: ' + ' × '.join(map(str, factors))
+        response = f'prime factors: ' + ' × '.join(map(str, factors))
         await message.channel.send(response)
 
 TOKEN = os.getenv("DISCORD_TOKEN")
