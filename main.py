@@ -26,22 +26,13 @@ def prime_factors(n):
     return factors
 
 def random_number_from_range(num1, num2=None):
-    """指定された範囲からランダムな数値を生成する関数"""
+    """指定された範囲からランダムな整数を生成する関数"""
     if num2 is None:
-        # 1からnum1までの範囲でランダムな数値を生成
+        # 1からnum1までの範囲でランダムな整数を生成
         num2 = num1
         num1 = 1
 
-    # 数値に小数点が含まれているかを確認
-    num1_is_integer = num1.is_integer()
-    num2_is_integer = num2.is_integer()
-
-    if num1_is_integer and num2_is_integer:
-        # 両方が整数である場合、整数を返す
-        return random.randint(int(num1), int(num2))
-    else:
-        # どちらかが少数である場合、少数を返す
-        return round(random.uniform(num1, num2), max(len(str(num1).split('.')[1]), len(str(num2).split('.')[1])))
+    return random.randint(int(num1), int(num2))
 
 @client.event
 async def on_ready():
