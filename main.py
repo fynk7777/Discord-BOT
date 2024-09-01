@@ -17,11 +17,9 @@ def prime_factors(n):
     factors = list(sympy.factorint(n).keys())
     return factors
 
-
 def random_number_from_range(num1, num2=None):
     """指定された範囲からランダムな整数を生成する関数"""
     if num2 is None:
-        # 1からnum1までの範囲でランダムな整数を生成
         num2 = num1
         num1 = 1
 
@@ -72,7 +70,7 @@ async def on_message(message):
     if prime_match:
         number = int(prime_match.group(1))
         factors = prime_factors(number)
-        response = f'prime factors: ' + ' × '.join(map(str, factors))
+        response = f'prime factors of {number}: ' + ' × '.join(map(str, factors))
         await message.channel.send(response)
         return
 
