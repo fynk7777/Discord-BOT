@@ -1,9 +1,9 @@
 import os
 import re
 import discord
+import random
 from flask import Flask
 from keep_alive import keep_alive
-from math import sqrt
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -24,6 +24,18 @@ def prime_factors(n):
         factors.append(n)
     return factors
 
+def random_number_from_range(num1, num2=None):
+    """指定された範囲からランダムな数値を生成する関数"""
+    if num2 is None:
+        # 1からnum1までの範囲でランダムな数値を生成
+        num2 = num1
+        num1 = 1
+
+    if isinstance(num1, float) or isinstance(num2, float):
+        return round(random.uniform(num1, num2), max(len(str(num1).split('.')[1]), len(str(num2).split('.')[1])))
+    else:
+        return random.randint(int(num1), int(num2))
+
 @client.event
 async def on_ready():
     print(f'BOTが起動しました。Logged in as {client.user}')
@@ -37,6 +49,7 @@ async def on_message(message):
     total_match = re.match(r'^total\.\s*([\d\s]+)', message.content)
     calc_match = re.match(r'^calc\.\s*(.+)', message.content)
     prime_match = re.match(r'^prime\.\s*(\d+)', message.content)
+    random_match = re.match(r'^random\.\s*([\d\.]+)(?:\s+([\d\.]+))?', message.content)
 
     if avg_match:
         numbers = list(map(int, avg_match.group(1).split()))
@@ -63,7 +76,14 @@ async def on_message(message):
     if prime_match:
         number = int(prime_match.group(1))
         factors = prime_factors(number)
-        response = f'prime factors: ' + ' × '.join(map(str, factors))
+        response = f'prime factors of {number}: ' + ' × '.join(map(str, factors))
+        await message.channel.send(response)
+
+    if random_match:
+        num1 = float(random_match.group(1))
+        num2 = float(random_match.group(2)) if random_match.group(2) else None
+        random_number = random_number_from_range(num1, num2)
+        response = f'random number: {random_number}'
         await message.channel.send(response)
 
 TOKEN = os.getenv("DISCORD_TOKEN")
