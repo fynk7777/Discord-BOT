@@ -28,7 +28,7 @@ async def on_message(message):
         await message.channel.send(response)
 
     if total:
-        numbers = list(map(int, total.group(1).split()))
+        numbers = list(map(int, numbers.group(1).split()))
         response = sum(numbers)
         await message.channel.send(response)
 
