@@ -28,7 +28,8 @@ async def on_message(message):
         await message.channel.send(response)
 
     if total:
-        response = list(map(int, total.group(1).split()))
+        numbers = list(map(int, total.group(1).split()))
+        response = sum(numbers)
         await message.channel.send(response)
 
 TOKEN = os.getenv("DISCORD_TOKEN")
