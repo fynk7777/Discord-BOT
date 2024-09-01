@@ -25,6 +25,11 @@ async def on_message(message):
         response = f'average: {average}'
         await message.channel.send(response)
 
+    match = re.match(r'^total\.\s*([\d\s]+)', message.content)
+    if match:
+        response = list(map(int, match.group(1).split()))
+        await message.channel.send(response)
+
 TOKEN = os.getenv("DISCORD_TOKEN")
 
 # Flaskサーバーを起動して、ボットを維持する
