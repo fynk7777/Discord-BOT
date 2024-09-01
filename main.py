@@ -24,12 +24,12 @@ async def on_message(message):
     if avg_match:
         numbers = list(map(int, avg_match.group(1).split()))
         average = sum(numbers) / len(numbers)
-        response = f'average: {average}'  # 小数点以下2桁で表示
+        response = f'average : {average}'  # 小数点以下2桁で表示
         await message.channel.send(response)
 
     if total_match:
         numbers = list(map(int, total_match.group(1).split()))
-        response = f'total: {sum(numbers)}'
+        response = f'total : {sum(numbers)}'
         await message.channel.send(response)
 
 TOKEN = os.getenv("DISCORD_TOKEN")
