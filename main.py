@@ -3,11 +3,26 @@ import re
 import discord
 from flask import Flask
 from keep_alive import keep_alive
+from math import sqrt
 
 intents = discord.Intents.default()
 intents.message_content = True
 
 client = discord.Client(intents=intents)
+
+def prime_factors(n):
+    """与えられた整数の素因数分解を行う関数"""
+    i = 2
+    factors = []
+    while i <= sqrt(n):
+        if n % i:
+            i += 1
+        else:
+            n //= i
+            factors.append(i)
+    if n > 1:
+        factors.append(n)
+    return factors
 
 @client.event
 async def on_ready():
@@ -21,6 +36,7 @@ async def on_message(message):
     avg_match = re.match(r'^avg\.\s*([\d\s]+)', message.content)
     total_match = re.match(r'^total\.\s*([\d\s]+)', message.content)
     calc_match = re.match(r'^calc\.\s*(.+)', message.content)
+    prime_match = re.match(r'^prime\.\s*(\d+)', message.content)
 
     if avg_match:
         numbers = list(map(int, avg_match.group(1).split()))
@@ -42,6 +58,12 @@ async def on_message(message):
         except Exception as e:
             # エラーが発生した場合はエラーメッセージを表示
             response = f'calculation error: {str(e)}'
+        await message.channel.send(response)
+
+    if prime_match:
+        number = int(prime_match.group(1))
+        factors = prime_factors(number)
+        response = f'prime factors of {number}: ' + ' × '.join(map(str, factors))
         await message.channel.send(response)
 
 TOKEN = os.getenv("DISCORD_TOKEN")
