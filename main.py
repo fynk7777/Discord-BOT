@@ -43,23 +43,25 @@ async def on_message(message):
     if message.author == client.user:
         return
 
+    # avg. コマンド処理
     avg_match = re.match(r'^avg\.\s*([\d\s]+)', message.content)
-    total_match = re.match(r'^total\.\s*([\d\s]+)', message.content)
-    calc_match = re.match(r'^calc\.\s*(.+)', message.content)
-    prime_match = re.match(r'^prime\.\s*(\d+)', message.content)
-    random_match = re.match(r'^random\.\s*([\d\.]+)(?:\s+([\d\.]+))?', message.content)
-
     if avg_match:
         numbers = list(map(int, avg_match.group(1).split()))
         average = sum(numbers) / len(numbers)
         response = f'average: {average:.2f}'  # 小数点以下2桁で表示
         await message.channel.send(response)
+        return
 
+    # total. コマンド処理
+    total_match = re.match(r'^total\.\s*([\d\s]+)', message.content)
     if total_match:
         numbers = list(map(int, total_match.group(1).split()))
         response = f'total: {sum(numbers)}'
         await message.channel.send(response)
+        return
 
+    # calc. コマンド処理
+    calc_match = re.match(r'^calc\.\s*(.+)', message.content)
     if calc_match:
         expression = calc_match.group(1)
         try:
@@ -70,19 +72,26 @@ async def on_message(message):
             # エラーが発生した場合はエラーメッセージを表示
             response = f'calculation error: {str(e)}'
         await message.channel.send(response)
+        return
 
+    # prime. コマンド処理
+    prime_match = re.match(r'^prime\.\s*(\d+)', message.content)
     if prime_match:
         number = int(prime_match.group(1))
         factors = prime_factors(number)
         response = f'prime factors of {number}: ' + ' × '.join(map(str, factors))
         await message.channel.send(response)
+        return
 
+    # random. コマンド処理
+    random_match = re.match(r'^random\.\s*([\d\.]+)(?:\s+([\d\.]+))?', message.content)
     if random_match:
         num1 = float(random_match.group(1))
         num2 = float(random_match.group(2)) if random_match.group(2) else None
         random_number = random_number_from_range(num1, num2)
         response = f'random number: {random_number}'
         await message.channel.send(response)
+        return
 
 TOKEN = os.getenv("DISCORD_TOKEN")
 
