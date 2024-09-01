@@ -42,6 +42,7 @@ def random_number_from_range(num1, num2=None):
         decimal_places = max(num1_decimal_places, num2_decimal_places)
         return round(random.uniform(num1, num2), decimal_places)
     else:
+        # 整数範囲でのランダムな整数を返す
         return random.randint(int(num1), int(num2))
 
 @client.event
