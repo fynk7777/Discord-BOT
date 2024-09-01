@@ -6,33 +6,68 @@ from flask import Flask
 from keep_alive import keep_alive
 from math import sqrt
 
-intents = discord.Intents.default()
-intents.message_content = True
+# 素数のファイル名
+PRIME_FILE = "Prime_number.txt"
 
-client = discord.Client(intents=intents)
+def load_primes():
+    """素数ファイルを読み込み、リストを返す"""
+    if not os.path.exists(PRIME_FILE):
+        # ファイルが存在しない場合は空のリストを返す
+        return []
+    with open(PRIME_FILE, "r") as f:
+        primes = list(map(int, f.read().split()))
+    return primes
+
+def save_prime(prime):
+    """新しい素数をファイルに保存する"""
+    with open(PRIME_FILE, "a") as f:
+        f.write(f"{prime}\n")
+
+def is_prime(n):
+    """素数かどうかをチェックする関数"""
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
 
 def prime_factors(n):
     """与えられた整数の素因数分解を行う最適化された関数"""
     factors = []
+    primes = load_primes()
 
-    # 2で割れるだけ割る
-    while n % 2 == 0:
-        factors.append(2)
-        n //= 2
+    # 素数表から素因数分解
+    for prime in primes:
+        while n % prime == 0:
+            factors.append(prime)
+            n //= prime
+        if n == 1:
+            return factors
 
-    # 3以上の奇数で割る
-    i = 3
+    # 素数表にない部分を標準の方法で素因数分解
+    i = primes[-1] + 2 if primes else 3
     max_factor = int(sqrt(n)) + 1
     while i <= max_factor:
-        while n % i == 0:
-            factors.append(i)
-            n //= i
-            max_factor = int(sqrt(n)) + 1  # nが小さくなるので最大値も更新
+        if is_prime(i):
+            while n % i == 0:
+                factors.append(i)
+                n //= i
+            if is_prime(i) and i not in primes:
+                save_prime(i)
         i += 2
+        max_factor = int(sqrt(n)) + 1  # nが小さくなるので最大値も更新
 
-    # 残った素数があればそれも追加
     if n > 1:
         factors.append(n)
+        if is_prime(n):
+            save_prime(n)
 
     return factors
 
@@ -44,6 +79,11 @@ def random_number_from_range(num1, num2=None):
         num1 = 1
 
     return random.randint(int(num1), int(num2))
+
+intents = discord.Intents.default()
+intents.message_content = True
+
+client = discord.Client(intents=intents)
 
 @client.event
 async def on_ready():
