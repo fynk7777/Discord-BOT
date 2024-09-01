@@ -22,7 +22,7 @@ async def on_message(message):
     if match:
         numbers = list(map(int, match.group(1).split()))
         average = sum(numbers) / len(numbers)
-        response = f'average: {average:.2f}'
+        response = f'average: {average}'
         await message.channel.send(response)
 
 TOKEN = os.getenv("DISCORD_TOKEN")
