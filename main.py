@@ -2,7 +2,6 @@ import os
 import re
 import discord
 import random
-import sympy
 from flask import Flask
 from keep_alive import keep_alive
 from math import sqrt
@@ -13,13 +12,34 @@ intents.message_content = True
 client = discord.Client(intents=intents)
 
 def prime_factors(n):
-    """与えられた整数の素因数分解を行う関数（SymPyライブラリ使用）"""
-    factors = list(sympy.factorint(n).keys())
+    """与えられた整数の素因数分解を行う最適化された関数"""
+    factors = []
+
+    # 2で割れるだけ割る
+    while n % 2 == 0:
+        factors.append(2)
+        n //= 2
+
+    # 3以上の奇数で割る
+    i = 3
+    max_factor = int(sqrt(n)) + 1
+    while i <= max_factor:
+        while n % i == 0:
+            factors.append(i)
+            n //= i
+            max_factor = int(sqrt(n)) + 1  # nが小さくなるので最大値も更新
+        i += 2
+
+    # 残った素数があればそれも追加
+    if n > 1:
+        factors.append(n)
+
     return factors
 
 def random_number_from_range(num1, num2=None):
     """指定された範囲からランダムな整数を生成する関数"""
     if num2 is None:
+        # 1からnum1までの範囲でランダムな整数を生成
         num2 = num1
         num1 = 1
 
