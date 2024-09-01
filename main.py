@@ -18,16 +18,17 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    match = re.match(r'^avg\.\s*([\d\s]+)', message.content)
-    if match:
-        numbers = list(map(int, match.group(1).split()))
+    avg = re.avg(r'^avg\.\s*([\d\s]+)', message.content)
+    total = re.total(r'^total\.\s*([\d\s]+)', message.content)
+
+    if avg:
+        numbers = list(map(int, avg.group(1).split()))
         average = sum(numbers) / len(numbers)
         response = f'average: {average}'
         await message.channel.send(response)
 
-    match = re.match(r'^total\.\s*([\d\s]+)', message.content)
-    if match:
-        response = list(map(int, match.group(1).split()))
+    if total:
+        response = list(map(int, total.group(1).split()))
         await message.channel.send(response)
 
 TOKEN = os.getenv("DISCORD_TOKEN")
