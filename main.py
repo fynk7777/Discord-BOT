@@ -33,17 +33,15 @@ def random_number_from_range(num1, num2=None):
         num1 = 1
 
     # 数値に小数点が含まれているかを確認
-    has_decimal = '.' in str(num1) or '.' in str(num2)
+    num1_is_integer = num1.is_integer()
+    num2_is_integer = num2.is_integer()
 
-    if has_decimal:
-        # 小数点以下の桁数を計算
-        num1_decimal_places = len(str(num1).split('.')[1]) if '.' in str(num1) else 0
-        num2_decimal_places = len(str(num2).split('.')[1]) if '.' in str(num2) else 0
-        decimal_places = max(num1_decimal_places, num2_decimal_places)
-        return round(random.uniform(num1, num2), decimal_places)
-    else:
-        # 整数範囲でのランダムな整数を返す
+    if num1_is_integer and num2_is_integer:
+        # 両方が整数である場合、整数を返す
         return random.randint(int(num1), int(num2))
+    else:
+        # どちらかが少数である場合、少数を返す
+        return round(random.uniform(num1, num2), max(len(str(num1).split('.')[1]), len(str(num2).split('.')[1])))
 
 @client.event
 async def on_ready():
