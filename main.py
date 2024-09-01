@@ -4,7 +4,7 @@ import discord
 import random
 from flask import Flask
 from keep_alive import keep_alive
-from math import sqrt  # sqrtをインポート
+from math import sqrt
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -32,8 +32,11 @@ def random_number_from_range(num1, num2=None):
         num2 = num1
         num1 = 1
 
-    if isinstance(num1, float) or isinstance(num2, float):
-        # num1, num2 の小数点以下の桁数を考慮
+    # 数値に小数点が含まれているかを確認
+    has_decimal = '.' in str(num1) or '.' in str(num2)
+
+    if has_decimal:
+        # 小数点以下の桁数を計算
         num1_decimal_places = len(str(num1).split('.')[1]) if '.' in str(num1) else 0
         num2_decimal_places = len(str(num2).split('.')[1]) if '.' in str(num2) else 0
         decimal_places = max(num1_decimal_places, num2_decimal_places)
