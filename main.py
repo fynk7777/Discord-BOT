@@ -18,18 +18,18 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    avg = re.avg(r'^avg\.\s*([\d\s]+)', message.content)
-    total = re.total(r'^total\.\s*([\d\s]+)', message.content)
+    avg_match = re.match(r'^avg\.\s*([\d\s]+)', message.content)
+    total_match = re.match(r'^total\.\s*([\d\s]+)', message.content)
 
-    if avg:
-        numbers = list(map(int, avg.group(1).split()))
+    if avg_match:
+        numbers = list(map(int, avg_match.group(1).split()))
         average = sum(numbers) / len(numbers)
-        response = f'average: {average}'
+        response = f'average: {average}'  # 小数点以下2桁で表示
         await message.channel.send(response)
 
-    if total:
-        numbers = list(map(int, numbers.group(1).split()))
-        response = sum(numbers)
+    if total_match:
+        numbers = list(map(int, total_match.group(1).split()))
+        response = f'total: {sum(numbers)}'
         await message.channel.send(response)
 
 TOKEN = os.getenv("DISCORD_TOKEN")
