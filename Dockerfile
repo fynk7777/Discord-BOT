@@ -1,22 +1,22 @@
-# ベースイメージの指定
-FROM python:3.9-slim
+# ベースイメージ
+FROM python:3.10-slim
 
-# 作業ディレクトリの設定
+# 作業ディレクトリを作成
 WORKDIR /app
 
-# 必要なライブラリのインストール
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# 必要なファイルをコンテナにコピー
+COPY requirements.txt ./
+COPY setup.py ./
+COPY factorizer.c ./
+COPY main.py ./
+COPY keep_alive.py ./
 
-# setup.pyとC拡張モジュールのソースコードをコピー
-COPY setup.py .
-COPY factorizer.c .
+# パッケージのインストール
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
 
-# C拡張モジュールのビルド
-RUN python setup.py build_ext --inplace
+# C拡張モジュールのビルドとインストール
+RUN python setup.py install
 
-# アプリケーションのソースコードをコピー
-COPY . .
-
-# サーバーを起動するスクリプトを実行
+# Flaskサーバーを起動して、ボットを維持するための設定
 CMD ["python", "main.py"]
