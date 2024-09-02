@@ -1,16 +1,22 @@
-# Pythonの公式イメージをベースにする
-FROM python:3.10-slim
+# ベースイメージの指定
+FROM python:3.9-slim
 
-# 作業ディレクトリを設定
+# 作業ディレクトリの設定
 WORKDIR /app
 
-# 必要なファイルをコンテナにコピー
-COPY requirements.txt requirements.txt
-COPY main.py main.py
-COPY keep_alive.py keep_alive.py
-
-# 依存関係をインストール
+# 必要なライブラリのインストール
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# コンテナが起動する際に実行されるコマンド
-CMD ["python", "keep_alive.py"]
+# setup.pyとC拡張モジュールのソースコードをコピー
+COPY setup.py .
+COPY factorizer.c .
+
+# C拡張モジュールのビルド
+RUN python setup.py build_ext --inplace
+
+# アプリケーションのソースコードをコピー
+COPY . .
+
+# サーバーを起動するスクリプトを実行
+CMD ["python", "main.py"]
