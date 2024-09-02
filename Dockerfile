@@ -1,26 +1,16 @@
-# ベースイメージ
+# Pythonの公式イメージをベースにする
 FROM python:3.10-slim
 
-# 必要なビルドツールをインストール
-RUN apt-get update && apt-get install -y build-essential python3-dev
-
-# 作業ディレクトリを作成
+# 作業ディレクトリを設定
 WORKDIR /app
 
 # 必要なファイルをコンテナにコピー
-COPY requirements.txt ./
-COPY setup.py ./
-COPY factorizer.c ./
-COPY main.py ./
-COPY keep_alive.py ./
+COPY requirements.txt requirements.txt
+COPY main.py main.py
+COPY keep_alive.py keep_alive.py
 
-# パッケージのインストール
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+# 依存関係をインストール
+RUN pip install --no-cache-dir -r requirements.txt
 
-# C拡張モジュールのビルドとインストール
-RUN python setup.py build_ext --inplace
-RUN python setup.py install
-
-# Flaskサーバーを起動して、ボットを維持するための設定
-CMD ["python", "main.py"]
+# コンテナが起動する際に実行されるコマンド
+CMD ["python", "keep_alive.py"]
