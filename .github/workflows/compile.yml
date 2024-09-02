@@ -31,8 +31,11 @@ jobs:
         gcc -c factorizer.c -o factorizer.o $(python3-config --cflags) -fPIC
         gcc -shared -o factorizer.so factorizer.o $(python3-config --ldflags)
 
+    - name: Move factorizer.so to project directory
+      run: mv factorizer.so /opt/render/project/src/
+
     - name: Upload compiled file
       uses: actions/upload-artifact@v3
       with:
         name: factorizer-so
-        path: factorizer.so
+        path: /opt/render/project/src/factorizer.so
