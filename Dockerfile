@@ -19,7 +19,7 @@ RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 # C拡張モジュールのビルドとインストール
-RUN python setup.py build
+RUN python setup.py build_ext --inplace
 RUN python setup.py install
 
 # Flaskサーバーを起動して、ボットを維持するための設定
