@@ -5,77 +5,7 @@ import random
 from flask import Flask
 from keep_alive import keep_alive
 from math import sqrt
-
-# 素数のファイル名リスト
-PRIME_FILES = ["Prime_number.txt", "Prime_number2.txt", "Prime_number3.txt"]
-
-def load_primes():
-    """複数の素数ファイルを読み込み、リストを返す"""
-    primes = []
-    for prime_file in PRIME_FILES:
-        if os.path.exists(prime_file):
-            with open(prime_file, "r") as f:
-                primes.extend(map(int, f.read().split()))
-    return primes
-
-def save_prime(prime):
-    """新しい素数を最も新しいファイルに保存する"""
-    for prime_file in reversed(PRIME_FILES):
-        if os.path.exists(prime_file):
-            with open(prime_file, "a") as f:
-                f.write(f"{prime}\n")
-            return
-    # もしどのファイルも存在しない場合は、最初のファイルに保存
-    with open(PRIME_FILES[0], "a") as f:
-        f.write(f"{prime}\n")
-
-def is_prime(n):
-    """素数かどうかをチェックする関数"""
-    if n <= 1:
-        return False
-    if n <= 3:
-        return True
-    if n % 2 == 0 or n % 3 == 0:
-        return False
-    i = 5
-    while i * i <= n:
-        if n % i == 0 or n % (i + 2) == 0:
-            return False
-        i += 6
-    return True
-
-def prime_factors(n):
-    """与えられた整数の素因数分解を行う最適化された関数"""
-    factors = []
-    primes = load_primes()
-
-    # 素数表から素因数分解
-    for prime in primes:
-        while n % prime == 0:
-            factors.append(prime)
-            n //= prime
-        if n == 1:
-            return factors
-
-    # 素数表にない部分を標準の方法で素因数分解
-    i = primes[-1] + 2 if primes else 3
-    max_factor = int(sqrt(n)) + 1
-    while i <= max_factor:
-        if is_prime(i):
-            while n % i == 0:
-                factors.append(i)
-                n //= i
-            if is_prime(i) and i not in primes:
-                save_prime(i)
-        i += 2
-        max_factor = int(sqrt(n)) + 1  # nが小さくなるので最大値も更新
-
-    if n > 1:
-        factors.append(n)
-        if is_prime(n):
-            save_prime(n)
-
-    return factors
+from factorizer import factorize
 
 def random_number_from_range(num1, num2=None):
     """指定された範囲からランダムな整数を生成する関数"""
@@ -135,7 +65,7 @@ async def on_message(message):
     prime_match = re.match(r'^prime\.\s*(\d+)', message.content)
     if prime_match:
         number = int(prime_match.group(1))
-        factors = prime_factors(number)
+        factors = factorize(number)
         response = f'prime factors: ' + ' × '.join(map(str, factors))
         await message.channel.send(response)
         return
