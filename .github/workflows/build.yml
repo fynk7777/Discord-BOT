@@ -1,4 +1,4 @@
-name: Build Factorizer
+name: Build and Test Factorizer
 
 on:
   push:
@@ -16,16 +16,8 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v3
 
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install gcc python3-dev
+    - name: Build Docker image
+      run: docker build -t factorizer-bot .
 
-    - name: Compile C file
-      run: gcc -c factorizer.c -o factorizer.o
-
-    - name: Create shared library
-      run: gcc -shared -o factorizer.so factorizer.o $(python3-config --ldflags)
-      
-    - name: List output files
-      run: ls -la
+    - name: Run the bot
+      run: docker run -e DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }} factorizer-bot
