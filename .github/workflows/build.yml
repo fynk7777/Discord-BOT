@@ -1,0 +1,31 @@
+name: Build Factorizer
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install gcc python3-dev
+
+    - name: Compile C file
+      run: gcc -c factorizer.c -o factorizer.o
+
+    - name: Create shared library
+      run: gcc -shared -o factorizer.so factorizer.o $(python3-config --ldflags)
+      
+    - name: List output files
+      run: ls -la
