@@ -21,12 +21,14 @@ jobs:
       with:
         python-version: '3.x'  # 例: '3.10'
 
-    - name: Install GCC
-      run: sudo apt-get install gcc
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc python3-dev
 
     - name: Compile factorizer.so
       run: |
-        gcc -c factorizer.c -o factorizer.o $(python3-config --cflags)
+        gcc -c factorizer.c -o factorizer.o $(python3-config --cflags) -fPIC
         gcc -shared -o factorizer.so factorizer.o $(python3-config --ldflags)
 
     - name: Upload compiled file
