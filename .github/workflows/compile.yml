@@ -19,7 +19,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.9'  # 例: '3.10'
+        python-version: '3.10'
 
     - name: Install dependencies
       run: |
@@ -31,14 +31,14 @@ jobs:
         gcc -c factorizer.c -o factorizer.o $(python3-config --cflags) -fPIC
         gcc -shared -o factorizer.so factorizer.o $(python3-config --ldflags)
 
-    - name: Create target directory
-      run: mkdir -p /opt/render/project/src/
+    - name: Verify factorizer.so exists
+      run: ls -l factorizer.so
 
-    - name: Move factorizer.so to project directory
+    - name: Move factorizer.so to project root
       run: mv factorizer.so /opt/render/project/src/
 
     - name: Upload compiled file
       uses: actions/upload-artifact@v3
       with:
         name: factorizer-so
-        path: /opt/render/project/src/factorizer.so
+        path: factorizer.so
