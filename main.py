@@ -5,8 +5,6 @@ import random
 from flask import Flask
 from keep_alive import keep_alive
 from math import sqrt
-import sys
-sys.path.append('/path/to/factorizer.so')
 from factorizer import factorize
 
 def random_number_from_range(num1, num2=None):
