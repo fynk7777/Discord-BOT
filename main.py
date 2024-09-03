@@ -6,7 +6,7 @@ from flask import Flask
 from keep_alive import keep_alive
 from math import sqrt
 import ctypes
-factorizer = ctypes.CDLL('./factorizer.so')
+factorizer = ctypes.CDLL(os.path.abspath('./factorizer.so'))
 from factorizer import factorize
 
 def random_number_from_range(num1, num2=None):
