@@ -8,8 +8,13 @@ from keep_alive import keep_alive
 from math import sqrt
 import ctypes
 
+# prime.txt から素数をロードする
+def load_primes(filename="prime.txt"):
+    with open(filename, "r") as file:
+        primes = [int(line.strip()) for line in file if line.strip().isdigit()]
+    return primes
+
 def factorization(n):
-    
     factors = []
     if n < 1:
         return [-1]
@@ -18,19 +23,34 @@ def factorization(n):
     elif n == 1:
         return [1]
 
+    # prime.txt から素数リストをロード
+    primes = load_primes()
     n1 = n
-    for i in range(2, int(sqrt(n))+1):
+
+    # prime.txt の素数を使って素因数分解
+    for prime in primes:
+        if prime > n1:
+            break
+        while n1 % prime == 0:
+            n1 //= prime
+            factors.append(prime)
+            if n1 == 1:
+                return factors
+
+    # prime.txt の範囲外の素数を計算
+    for i in range(max(primes[-1] + 1, 2), int(sqrt(n1)) + 1):
         if n1 % i == 0:
             while n1 % i == 0:
-                n1//=i
+                n1 //= i
                 factors.append(i)
                 if n1 == 1:
                     return factors
+
+    # 残りの部分が素数の場合
     if n1 != 1:
         factors.append(n1)
-        return factors
-    elif factors == []:
-        return [n]
+    
+    return factors
 
 def factorize(num):
     global time_diff
