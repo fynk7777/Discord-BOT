@@ -8,6 +8,8 @@ from keep_alive import keep_alive
 from math import sqrt
 import ctypes
 
+message = ""
+
 # prime.txt から素数をロードする
 def load_primes(filename="prime.txt"):
     with open(filename, "r") as file:
@@ -68,8 +70,8 @@ def factorize(num):
     result = factorization(num)
     end = time.time()
     time_diff = end-start
-    global response
-    response = f'prime factors: {result}\n{time_diff}秒'
+    global message
+    message = f'prime factors: {result}\n{time_diff}秒'
     print(f"{num}:{result}")
     print(f"{time_diff}秒")
 
@@ -132,6 +134,7 @@ async def on_message(message):
     if prime_match:
         number = int(prime_match.group(1))
         factorize(number)
+        response = message
         await message.channel.send(response)
         return
 
