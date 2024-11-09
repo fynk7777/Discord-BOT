@@ -14,6 +14,11 @@ def load_primes(filename="prime.txt"):
         primes = [int(line.strip()) for line in file if line.strip().isdigit()]
     return primes
 
+# 新たに発見した素数を prime.txt に追加する
+def save_prime(prime, filename="prime.txt"):
+    with open(filename, "a") as file:
+        file.write(f"{prime}\n")
+
 def factorization(n):
     factors = []
     if n < 1:
@@ -26,6 +31,7 @@ def factorization(n):
     # prime.txt から素数リストをロード
     primes = load_primes()
     n1 = n
+    max_prime = max(primes)
 
     # prime.txt の素数を使って素因数分解
     for prime in primes:
@@ -37,8 +43,12 @@ def factorization(n):
             if n1 == 1:
                 return factors
 
-    # prime.txt の範囲外の素数を計算
-    for i in range(max(primes[-1] + 1, 2), int(sqrt(n1)) + 1):
+    # prime.txt にない範囲外の素数を計算してファイルに保存
+    for i in range(max_prime + 1, int(sqrt(n1)) + 1):
+        if all(i % p != 0 for p in primes):
+            # 新しい素数を見つけた場合
+            primes.append(i)
+            save_prime(i)  # prime.txt に保存
         if n1 % i == 0:
             while n1 % i == 0:
                 n1 //= i
@@ -49,7 +59,8 @@ def factorization(n):
     # 残りの部分が素数の場合
     if n1 != 1:
         factors.append(n1)
-    
+        save_prime(n1)  # prime.txt に保存
+
     return factors
 
 def factorize(num):
