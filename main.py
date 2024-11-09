@@ -7,8 +7,6 @@ from flask import Flask
 from keep_alive import keep_alive
 from math import sqrt
 import ctypes
-from factorizer import factorize
-
 
 def factorization(n):
     
