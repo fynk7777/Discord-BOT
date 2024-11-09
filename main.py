@@ -11,8 +11,7 @@ factorizer = ctypes.CDLL(os.path.abspath('./factorizer.so'))
 from factorizer import factorize
 
 
-def factorization(num):
-    def factorization(n):
+def factorization(n):
     
     factors = []
     if n < 1:
