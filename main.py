@@ -64,12 +64,12 @@ def factorization(n):
     return factors
 
 def factorize(num):
-    global time_diff
-    global result
     start = time.time()
     result = factorization(num)
     end = time.time()
     time_diff = end-start
+    global response
+    response = f'prime factors: {result}\n{time_diff}秒'
     print(f"{num}:{result}")
     print(f"{time_diff}秒")
 
@@ -132,7 +132,6 @@ async def on_message(message):
     if prime_match:
         number = int(prime_match.group(1))
         factorize(number)
-        response = f'prime factors: {result}\n{time_diff}秒'
         await message.channel.send(response)
         return
 
