@@ -7,7 +7,6 @@ from flask import Flask
 from keep_alive import keep_alive
 from math import sqrt
 import ctypes
-factorizer = ctypes.CDLL(os.path.abspath('./factorizer.so'))
 from factorizer import factorize
 
 
