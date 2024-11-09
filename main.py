@@ -2,12 +2,49 @@ import os
 import re
 import discord
 import random
+import time
 from flask import Flask
 from keep_alive import keep_alive
 from math import sqrt
 import ctypes
 factorizer = ctypes.CDLL(os.path.abspath('./factorizer.so'))
 from factorizer import factorize
+
+
+def factorization(num):
+    def factorization(n):
+    
+    factors = []
+    if n < 1:
+        return [-1]
+    elif not isinstance(n, int):
+        return [-1]
+    elif n == 1:
+        return [1]
+
+    n1 = n
+    for i in range(2, int(sqrt(n))+1):
+        if n1 % i == 0:
+            while n1 % i == 0:
+                n1//=i
+                factors.append(i)
+                if n1 == 1:
+                    return factors
+    if n1 != 1:
+        factors.append(n1)
+        return factors
+    elif factors == []:
+        return [n]
+
+def factorize(num):
+    global time_diff
+    global result
+    start = time.time()
+    result = factorization(num)
+    end = time.time()
+    time_diff = end-start
+    print(f"{num}:{result}")
+    print(f"{time_diff}秒")
 
 def random_number_from_range(num1, num2=None):
     """指定された範囲からランダムな整数を生成する関数"""
@@ -67,8 +104,8 @@ async def on_message(message):
     prime_match = re.match(r'^prime\.\s*(\d+)', message.content)
     if prime_match:
         number = int(prime_match.group(1))
-        factors = factorize(number)
-        response = f'prime factors: ' + ' × '.join(map(str, factors))
+        factorize(number)
+        response = f'prime factors: {result}\n{time_diff}秒'
         await message.channel.send(response)
         return
 
