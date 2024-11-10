@@ -7,6 +7,8 @@ from flask import Flask
 from keep_alive import keep_alive
 from math import sqrt
 import ctypes
+import sys
+from datetime import datetime, timedelta
 
 msg = ""
 
@@ -95,8 +97,22 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    content = message.content
+    user = message.user
+    user_id = user.id
     if message.author == client.user:
         return
+
+    if content == "b!test":
+        await message.channel.send("githubにより起動しています")
+    elif content == "b!bot stop":
+        if user_id == "1212687868603007067":
+            embed = discord.Embed(
+                title="BOTを停止します",
+                color="0xff0000",
+                timestamp=datetime.utcnow()
+            )
+            await message.channel.send(embed=embed)
 
     # avg. コマンド処理
     avg_match = re.match(r'^avg\.\s*([\d\s]+)', message.content)
