@@ -97,15 +97,15 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    content = message.content
-    user = message.user
+    message_content = message.content
+    user = message.author
     user_id = user.id
     if message.author == client.user:
         return
 
-    if content == "b!test":
+    if message_content == "b!test":
         await message.channel.send("githubにより起動しています")
-    elif content == "b!bot stop":
+    elif message_content == "b!bot stop":
         if user_id == "1212687868603007067":
             embed = discord.Embed(
                 title="BOTを停止します",
