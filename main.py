@@ -103,7 +103,7 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message_content == "b!test":
+    if message_content == "b!bot test":
         await message.channel.send("githubにより起動しています")
     elif message_content == "b!bot stop":
         if user_id == "1212687868603007067":
