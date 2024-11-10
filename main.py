@@ -108,8 +108,9 @@ async def on_message(message):
         await message.channel.send("githubにより起動しています")
     if message.content == "b!bot stop":
         if user_id == 1212687868603007067:
-            embed = discord.Embed(title='BOTが停止しました^^',description="起動させるにはRenderでClear Cashe & Deployをする必要があります",color=0xff0000,timestamp=datetime.utcnow())
+            embed = discord.Embed(title='BOTを停止します',description="",color=0xff0000,timestamp=datetime.utcnow())
             await message.channel.send(embed=embed)
+            sys.exit()
 
     # avg. コマンド処理
     avg_match = re.match(r'^avg\.\s*([\d\s]+)', message.content)
